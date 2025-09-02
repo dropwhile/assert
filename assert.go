@@ -9,7 +9,6 @@ package assert
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"reflect"
 	"regexp"
 	"strings"
@@ -31,47 +30,47 @@ type equaler[T any] interface {
 	Equal(T) bool
 }
 
-func Equal[T any](t TestingT, got, want T, msgAndArgs ...any) {
+func Equal[T any](t TestingT, got, want T, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
 
 	if !isEqual(got, want) {
-		t.Errorf("got: %#v; want: %#v;%s", got, want, formatMsg(msgAndArgs...))
+		t.Errorf("got: %#v; want: %#v;%s", got, want, formatMsg(msg...))
 	}
 }
 
-func NotEqual[T any](t TestingT, got, want T, msgAndArgs ...any) {
+func NotEqual[T any](t TestingT, got, want T, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
 
 	if isEqual(got, want) {
-		t.Errorf("got: %#v; expected values to be different;%s", got, formatMsg(msgAndArgs...))
+		t.Errorf("got: %#v; expected values to be different;%s", got, formatMsg(msg...))
 	}
 }
 
-func Nil(t TestingT, got any, msgAndArgs ...any) {
+func Nil(t TestingT, got any, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
 
 	if !isNil(got) {
-		t.Errorf("got: %#v; want: <nil>;%s", got, formatMsg(msgAndArgs...))
+		t.Errorf("got: %#v; want: <nil>;%s", got, formatMsg(msg...))
 	}
 }
 
-func NotNil(t TestingT, got any, msgAndArgs ...any) {
+func NotNil(t TestingT, got any, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
 
 	if isNil(got) {
-		t.Errorf("got: <nil>; expected non-nil;%s", formatMsg(msgAndArgs...))
+		t.Errorf("got: <nil>; expected non-nil;%s", formatMsg(msg...))
 	}
 }
 
-func ErrorIs(t TestingT, got error, want any, msgAndArgs ...any) {
+func ErrorIs(t TestingT, got error, want any, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
@@ -79,45 +78,45 @@ func ErrorIs(t TestingT, got error, want any, msgAndArgs ...any) {
 	switch w := want.(type) {
 	case nil:
 		if got != nil {
-			t.Errorf("unexpected error: %s;%s", got, formatMsg(msgAndArgs...))
+			t.Errorf("unexpected error: %s;%s", got, formatMsg(msg...))
 		}
 	case string:
 		if !strings.Contains(got.Error(), w) {
-			t.Errorf("got: %q; want: %q;%s", got, want, formatMsg(msgAndArgs...))
+			t.Errorf("got: %q; want: %q;%s", got, want, formatMsg(msg...))
 		}
 	case error:
 		if !errors.Is(got, w) {
 			if isNil(got) {
-				t.Errorf("got: <nil>; want: %T(%v);%s", w, w, formatMsg(msgAndArgs...))
+				t.Errorf("got: <nil>; want: %T(%v);%s", w, w, formatMsg(msg...))
 			} else {
-				t.Errorf("got: %T(%v); want: %T(%v);%s", got, got, w, w, formatMsg(msgAndArgs...))
+				t.Errorf("got: %T(%v); want: %T(%v);%s", got, got, w, w, formatMsg(msg...))
 			}
 		}
 	case reflect.Type:
 		target := reflect.New(w).Interface()
 		if !errors.As(got, target) {
-			t.Errorf("got: %T; want: %v;%s", got, w, formatMsg(msgAndArgs...))
+			t.Errorf("got: %T; want: %v;%s", got, w, formatMsg(msg...))
 		}
 	default:
 		t.Fatalf("unsupported want type: %T", want)
 	}
 }
 
-func ErrorAs(t TestingT, got error, target any, msgAndArgs ...any) {
+func ErrorAs(t TestingT, got error, target any, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
 
 	if got == nil {
-		t.Errorf("got: nil; want assignable to: %T;%s", target, formatMsg(msgAndArgs...))
+		t.Errorf("got: nil; want assignable to: %T;%s", target, formatMsg(msg...))
 		return
 	}
 	if !errors.As(got, target) {
-		t.Errorf("got: %v#; want assignable to: %T(%#v);%s", got, target, formatMsg(msgAndArgs...))
+		t.Errorf("got: %v#; want assignable to: %T(%#v);%s", got, target, formatMsg(msg...))
 	}
 }
 
-func MatchesRegexp(t TestingT, got, pattern string, msgAndArgs ...any) {
+func MatchesRegexp(t TestingT, got, pattern string, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
@@ -128,7 +127,7 @@ func MatchesRegexp(t TestingT, got, pattern string, msgAndArgs ...any) {
 		return
 	}
 	if !matched {
-		t.Errorf("got: %q; want to match %q;%s", got, pattern, formatMsg(msgAndArgs...))
+		t.Errorf("got: %q; want to match %q;%s", got, pattern, formatMsg(msg...))
 	}
 }
 
@@ -164,24 +163,14 @@ func isNil(v any) bool {
 	return false
 }
 
-func formatMsg(msgAndArgs ...any) string {
-	var b strings.Builder
-	switch len(msgAndArgs) {
-	case 0:
-	case 1:
-		b.WriteString(" ")
-		if s, ok := msgAndArgs[0].(string); ok {
-			b.WriteString(s)
-		} else {
-			fmt.Fprint(&b, msgAndArgs[0])
-		}
-	default:
-		b.WriteString(" ")
-		if s, ok := msgAndArgs[0].(string); ok {
-			fmt.Fprintf(&b, s, msgAndArgs[1:]...)
-		} else {
-			fmt.Fprint(&b, msgAndArgs...)
-		}
+func formatMsg(msg ...string) string {
+	if len(msg) == 0 {
+		return ""
 	}
-	return b.String()
+
+	if len(msg[0]) == 0 {
+		return ""
+	}
+
+	return " " + strings.Join(msg, "; ")
 }

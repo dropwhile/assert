@@ -76,27 +76,31 @@ func (e errType) Error() string {
 
 func TestFormatMsg(t *testing.T) {
 	testCases := map[string]struct {
-		args     []any
+		msg      []string
 		expected string
 	}{
-		"single string": {
-			args:     []any{"single string"},
-			expected: " single string",
+		"no string": {
+			msg:      []string{},
+			expected: "",
 		},
-		"format string one arg": {
-			args:     []any{"format: %s", "second string"},
-			expected: " format: second string",
+		"empty string": {
+			msg:      []string{""},
+			expected: "",
 		},
-		"format string two arg": {
-			args:     []any{"format: %s %d", "second string", 3},
-			expected: " format: second string 3",
+		"has string": {
+			msg:      []string{"one"},
+			expected: " one",
+		},
+		"has two strings": {
+			msg:      []string{"one", "two"},
+			expected: " one; two",
 		},
 	}
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			got := formatMsg(tc.args...)
+			got := formatMsg(tc.msg...)
 			if got != tc.expected {
-				t.Errorf("got: %s; want: %s;", got, tc.expected)
+				t.Errorf("got: %#v; want: %#v;", got, tc.expected)
 			}
 		})
 	}
