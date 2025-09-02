@@ -1,4 +1,4 @@
-# Assert - A minimal test package
+# Assert - A minimal Go test package
 
 Inspired by:
 * https://github.com/nalgeon/be
