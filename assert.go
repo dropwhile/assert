@@ -30,6 +30,26 @@ type equaler[T any] interface {
 	Equal(T) bool
 }
 
+func True(t TestingT, got bool, msg ...string) {
+	if ht, ok := t.(helperT); ok {
+		ht.Helper()
+	}
+
+	if !got {
+		t.Errorf("got: false; want: true;%s", formatMsg(msg...))
+	}
+}
+
+func False(t TestingT, got bool, msg ...string) {
+	if ht, ok := t.(helperT); ok {
+		ht.Helper()
+	}
+
+	if got {
+		t.Errorf("got: true; want: false;%s", formatMsg(msg...))
+	}
+}
+
 func Equal[T any](t TestingT, got, want T, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
