@@ -28,12 +28,13 @@ func TestSomething(t *testing.T) {
     err := errors.New("my error")
     assert.Nil(t, err) // test assertion that something is nil
     // output => &errors.errorString{s:"my error"}; want: <nil>;
-    
+
     err = errType("oops")
     assert.NotNil(t, nil) // test assertion that something is NOT nil
     // output => got: <nil>; expected non-nil
 
-    assert.ErrorIs(t, err, "my bad error") // assert that an error value matches (string match)
+    // assert that an error value matches (string match)
+    assert.ErrorIs(t, err, "my bad error")
     // output => got: "oops"; want: "my bad error";
 
     assert.ErrorIs(t, nil, err)  // assert error value matches (error match)
@@ -44,19 +45,19 @@ func TestSomething(t *testing.T) {
     // output => got: <nil>; want: *fmt.wrapError(wrapped: oops)
 
     // can also check for error type, using errors.As under the hood
-    assert.ErrorIs(t, nil, reflect.TypeFor[*fs.PathError]()) 
+    assert.ErrorIs(t, nil, reflect.TypeFor[*fs.PathError]())
     // output => got: <nil>; want: *fs.PathError
 
     // assert boolean true
-    assert.True(t, false) 
+    assert.True(t, false)
     // output => got: false; want: true;
 
     // assert boolean false
-    assert.False(t, true) 
+    assert.False(t, true)
     // output => got: true; want: false;
 
     // assert equal
-    assert.Equal(t, 1, 2) 
+    assert.Equal(t, 1, 2)
     // output => got: 1; want: 2;
 
     // assert NOT equal
