@@ -6,7 +6,7 @@ Inspired by:
 
 ## Usage
 
-```
+```go
 package foo
 
 import (
