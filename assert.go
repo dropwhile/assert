@@ -122,31 +122,14 @@ func ErrorIs(t TestingT, got error, want any, msg ...string) {
 	}
 }
 
-func ErrorAs(t TestingT, got error, target any, msg ...string) {
-	if ht, ok := t.(helperT); ok {
-		ht.Helper()
-	}
-
-	if got == nil {
-		t.Errorf("got: nil; want assignable to: %T;%s", target, formatMsg(msg...))
-		return
-	}
-	if !errors.As(got, target) {
-		t.Errorf("got: %v#; want assignable to: %T(%#v);%s", got, target, formatMsg(msg...))
-	}
-}
-
 func MatchesRegexp(t TestingT, got, pattern string, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
 
-	matched, err := regexp.MatchString(pattern, got)
-	if err != nil {
+	if matched, err := regexp.MatchString(pattern, got); err != nil {
 		t.Fatalf("unable to parse regexp pattern %s: %s", pattern, err.Error())
-		return
-	}
-	if !matched {
+	} else if !matched {
 		t.Errorf("got: %q; want to match %q;%s", got, pattern, formatMsg(msg...))
 	}
 }
