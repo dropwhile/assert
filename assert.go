@@ -36,7 +36,7 @@ func True(t TestingT, got bool, msg ...string) {
 	}
 
 	if !got {
-		t.Errorf("got: false; want: true;%s", formatMsg(msg...))
+		t.Fatalf("got: false; want: true;%s", formatMsg(msg...))
 	}
 }
 
@@ -46,7 +46,7 @@ func False(t TestingT, got bool, msg ...string) {
 	}
 
 	if got {
-		t.Errorf("got: true; want: false;%s", formatMsg(msg...))
+		t.Fatalf("got: true; want: false;%s", formatMsg(msg...))
 	}
 }
 
@@ -56,7 +56,7 @@ func Equal[T any](t TestingT, got, want T, msg ...string) {
 	}
 
 	if !isEqual(got, want) {
-		t.Errorf("got: %#v; want: %#v;%s", got, want, formatMsg(msg...))
+		t.Fatalf("got: %#v; want: %#v;%s", got, want, formatMsg(msg...))
 	}
 }
 
@@ -66,7 +66,7 @@ func NotEqual[T any](t TestingT, got, want T, msg ...string) {
 	}
 
 	if isEqual(got, want) {
-		t.Errorf("got: %#v; expected values to be different;%s", got, formatMsg(msg...))
+		t.Fatalf("got: %#v; expected values to be different;%s", got, formatMsg(msg...))
 	}
 }
 
@@ -76,7 +76,7 @@ func Nil(t TestingT, got any, msg ...string) {
 	}
 
 	if !isNil(got) {
-		t.Errorf("got: %#v; want: <nil>;%s", got, formatMsg(msg...))
+		t.Fatalf("got: %#v; want: <nil>;%s", got, formatMsg(msg...))
 	}
 }
 
@@ -86,7 +86,7 @@ func NotNil(t TestingT, got any, msg ...string) {
 	}
 
 	if isNil(got) {
-		t.Errorf("got: <nil>; expected non-nil;%s", formatMsg(msg...))
+		t.Fatalf("got: <nil>; expected non-nil;%s", formatMsg(msg...))
 	}
 }
 
@@ -98,24 +98,24 @@ func ErrorIs(t TestingT, got error, want any, msg ...string) {
 	switch w := want.(type) {
 	case nil:
 		if got != nil {
-			t.Errorf("unexpected error: %s;%s", got, formatMsg(msg...))
+			t.Fatalf("unexpected error: %s;%s", got, formatMsg(msg...))
 		}
 	case string:
 		if !strings.Contains(got.Error(), w) {
-			t.Errorf("got: %q; want: %q;%s", got, want, formatMsg(msg...))
+			t.Fatalf("got: %q; want: %q;%s", got, want, formatMsg(msg...))
 		}
 	case error:
 		if !errors.Is(got, w) {
 			if isNil(got) {
-				t.Errorf("got: <nil>; want: %T(%v);%s", w, w, formatMsg(msg...))
+				t.Fatalf("got: <nil>; want: %T(%v);%s", w, w, formatMsg(msg...))
 			} else {
-				t.Errorf("got: %T(%v); want: %T(%v);%s", got, got, w, w, formatMsg(msg...))
+				t.Fatalf("got: %T(%v); want: %T(%v);%s", got, got, w, w, formatMsg(msg...))
 			}
 		}
 	case reflect.Type:
 		target := reflect.New(w).Interface()
 		if !errors.As(got, target) {
-			t.Errorf("got: %T; want: %v;%s", got, w, formatMsg(msg...))
+			t.Fatalf("got: %T; want: %v;%s", got, w, formatMsg(msg...))
 		}
 	default:
 		t.Fatalf("unsupported want type: %T", want)
@@ -130,7 +130,7 @@ func MatchesRegexp(t TestingT, got, pattern string, msg ...string) {
 	if matched, err := regexp.MatchString(pattern, got); err != nil {
 		t.Fatalf("unable to parse regexp pattern %s: %s", pattern, err.Error())
 	} else if !matched {
-		t.Errorf("got: %q; want to match %q;%s", got, pattern, formatMsg(msg...))
+		t.Fatalf("got: %q; want to match %q;%s", got, pattern, formatMsg(msg...))
 	}
 }
 

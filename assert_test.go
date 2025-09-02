@@ -228,8 +228,8 @@ func TestEqual(t *testing.T) {
 				if !tb.failed {
 					t.Errorf("Equal %#v vs %#v: should have failed", tc.got, tc.want)
 				}
-				if tb.fatal {
-					t.Error("should not be fatal")
+				if !tb.fatal {
+					t.Error("should be fatal")
 				}
 				if tc.msg != "" && tb.msg != tc.msg {
 					t.Errorf("got: %q; want: %q;", tb.msg, tc.msg)
@@ -274,8 +274,8 @@ func TestEqual(t *testing.T) {
 			if !tb.failed {
 				t.Errorf("%#v vs %#v: should have failed", n1, n2)
 			}
-			if tb.fatal {
-				t.Error("should not be fatal")
+			if !tb.fatal {
+				t.Error("should be fatal")
 			}
 		})
 	})
@@ -304,8 +304,8 @@ func TestErrors(t *testing.T) {
 			if !tb.failed {
 				t.Error("should have failed")
 			}
-			if tb.fatal {
-				t.Error("should not be fatal")
+			if !tb.fatal {
+				t.Error("should be fatal")
 			}
 			wantMsg := "unexpected error: oops;"
 			if tb.msg != wantMsg {
@@ -322,8 +322,8 @@ func TestErrors(t *testing.T) {
 			if !tb.failed {
 				t.Error("should have failed")
 			}
-			if tb.fatal {
-				t.Error("should not be fatal")
+			if !tb.fatal {
+				t.Error("should be fatal")
 			}
 			wantMsg := `got: <nil>; want: *errors.errorString(oops);`
 			if tb.msg != wantMsg {
@@ -364,8 +364,8 @@ func TestErrors(t *testing.T) {
 			if !tb.failed {
 				t.Error("should have failed")
 			}
-			if tb.fatal {
-				t.Error("should not be fatal")
+			if !tb.fatal {
+				t.Error("should be fatal")
 			}
 			wantMsg := "got: *errors.errorString(error 1); want: *errors.errorString(error 2);"
 			if tb.msg != wantMsg {
@@ -381,8 +381,8 @@ func TestErrors(t *testing.T) {
 			if !tb.failed {
 				t.Error("should have failed")
 			}
-			if tb.fatal {
-				t.Error("should not be fatal")
+			if !tb.fatal {
+				t.Error("should be fatal")
 			}
 			wantMsg := "got: *errors.errorString(oops); want: assert.errType(oops);"
 			if tb.msg != wantMsg {
@@ -408,8 +408,8 @@ func TestErrors(t *testing.T) {
 			if !tb.failed {
 				t.Error("should have failed")
 			}
-			if tb.fatal {
-				t.Error("should not be fatal")
+			if !tb.fatal {
+				t.Error("should be fatal")
 			}
 			wantMsg := `got: "the night is dark"; want: "day";`
 			if tb.msg != wantMsg {
@@ -435,8 +435,8 @@ func TestErrors(t *testing.T) {
 			if !tb.failed {
 				t.Error("should have failed")
 			}
-			if tb.fatal {
-				t.Error("should not be fatal")
+			if !tb.fatal {
+				t.Error("should be fatal")
 			}
 			wantMsg := "got: assert.errType; want: *fs.PathError;"
 			if tb.msg != wantMsg {
