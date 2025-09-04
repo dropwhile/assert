@@ -90,7 +90,7 @@ func NotNil(t TestingT, got any, msg ...string) {
 	}
 }
 
-func ErrorIs(t TestingT, got error, want any, msg ...string) {
+func Error(t TestingT, got error, want any, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}

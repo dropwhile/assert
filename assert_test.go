@@ -285,7 +285,7 @@ func TestErrors(t *testing.T) {
 	t.Run("want nil", func(t *testing.T) {
 		t.Run("got nil", func(t *testing.T) {
 			tb := &mockTB{}
-			ErrorIs(tb, nil, nil)
+			Error(tb, nil, nil)
 			if tb.failed {
 				t.Errorf("failed: %s", tb.msg)
 			}
@@ -300,7 +300,7 @@ func TestErrors(t *testing.T) {
 		t.Run("got error", func(t *testing.T) {
 			tb := &mockTB{}
 			err := errors.New("oops")
-			ErrorIs(tb, err, nil)
+			Error(tb, err, nil)
 			if !tb.failed {
 				t.Error("should have failed")
 			}
@@ -318,7 +318,7 @@ func TestErrors(t *testing.T) {
 		t.Run("got nil", func(t *testing.T) {
 			tb := &mockTB{}
 			err := errors.New("oops")
-			ErrorIs(tb, nil, err)
+			Error(tb, nil, err)
 			if !tb.failed {
 				t.Error("should have failed")
 			}
@@ -340,7 +340,7 @@ func TestErrors(t *testing.T) {
 		t.Run("same error", func(t *testing.T) {
 			tb := &mockTB{}
 			err := errors.New("oops")
-			ErrorIs(tb, err, err)
+			Error(tb, err, err)
 			if tb.failed {
 				t.Errorf("failed: %s", tb.msg)
 			}
@@ -350,7 +350,7 @@ func TestErrors(t *testing.T) {
 			tb := &mockTB{}
 			err := errors.New("oops")
 			wrappedErr := fmt.Errorf("wrapped: %w", err)
-			ErrorIs(tb, wrappedErr, err)
+			Error(tb, wrappedErr, err)
 			if tb.failed {
 				t.Errorf("failed: %s", tb.msg)
 			}
@@ -360,7 +360,7 @@ func TestErrors(t *testing.T) {
 			tb := &mockTB{}
 			err1 := errors.New("error 1")
 			err2 := errors.New("error 2")
-			ErrorIs(tb, err1, err2)
+			Error(tb, err1, err2)
 			if !tb.failed {
 				t.Error("should have failed")
 			}
@@ -377,7 +377,7 @@ func TestErrors(t *testing.T) {
 			tb := &mockTB{}
 			err1 := errors.New("oops")
 			err2 := errType("oops")
-			ErrorIs(tb, err1, err2)
+			Error(tb, err1, err2)
 			if !tb.failed {
 				t.Error("should have failed")
 			}
@@ -395,7 +395,7 @@ func TestErrors(t *testing.T) {
 		t.Run("contains", func(t *testing.T) {
 			tb := &mockTB{}
 			err := errors.New("the night is dark")
-			ErrorIs(tb, err, "night is")
+			Error(tb, err, "night is")
 			if tb.failed {
 				t.Errorf("failed: %s", tb.msg)
 			}
@@ -404,7 +404,7 @@ func TestErrors(t *testing.T) {
 		t.Run("does not contain", func(t *testing.T) {
 			tb := &mockTB{}
 			err := errors.New("the night is dark")
-			ErrorIs(tb, err, "day")
+			Error(tb, err, "day")
 			if !tb.failed {
 				t.Error("should have failed")
 			}
@@ -422,7 +422,7 @@ func TestErrors(t *testing.T) {
 		t.Run("same type", func(t *testing.T) {
 			tb := &mockTB{}
 			err := errType("oops")
-			ErrorIs(tb, err, reflect.TypeFor[errType]())
+			Error(tb, err, reflect.TypeFor[errType]())
 			if tb.failed {
 				t.Errorf("failed: %s", tb.msg)
 			}
@@ -431,7 +431,7 @@ func TestErrors(t *testing.T) {
 		t.Run("different type", func(t *testing.T) {
 			tb := &mockTB{}
 			err := errType("oops")
-			ErrorIs(tb, err, reflect.TypeFor[*fs.PathError]())
+			Error(tb, err, reflect.TypeFor[*fs.PathError]())
 			if !tb.failed {
 				t.Error("should have failed")
 			}
@@ -448,7 +448,7 @@ func TestErrors(t *testing.T) {
 	t.Run("unsupported want", func(t *testing.T) {
 		tb := &mockTB{}
 		var want int
-		ErrorIs(tb, errors.New("oops"), want)
+		Error(tb, errors.New("oops"), want)
 		if !tb.failed {
 			t.Error("should have failed")
 		}
