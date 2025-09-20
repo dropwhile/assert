@@ -13,6 +13,7 @@ import (
 	"io/fs"
 	"math/rand/v2"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 )
@@ -458,6 +459,41 @@ func TestErrors(t *testing.T) {
 		wantMsg := "unsupported want type: int"
 		if tb.msg != wantMsg {
 			t.Errorf("got: %q; want: %q", tb.msg, wantMsg)
+		}
+	})
+}
+
+func TestMatchesRegex(t *testing.T) {
+	t.Run("expect success", func(t *testing.T) {
+		tb := &mockTB{}
+		candidate := "some test"
+		rx := `^some`
+		MatchesRegex(tb, candidate, rx)
+		if tb.failed {
+			t.Errorf("failed: %s", tb.msg)
+		}
+	})
+
+	t.Run("expect failure", func(t *testing.T) {
+		tb := &mockTB{}
+		candidate := "some test"
+		rx := `^nothing`
+		MatchesRegex(tb, candidate, rx)
+		if !tb.failed {
+			t.Errorf("%q matched %q", candidate, rx)
+		}
+	})
+
+	t.Run("bad regex", func(t *testing.T) {
+		tb := &mockTB{}
+		candidate := "some test"
+		rx := `test[nothing`
+		MatchesRegex(tb, candidate, rx)
+		if !tb.failed {
+			t.Errorf("%q matched %q", candidate, rx)
+		}
+		if !strings.HasPrefix(tb.msg, "unable to parse") {
+			t.Errorf("regex compiled when it shouldn't have: %q", rx)
 		}
 	})
 }

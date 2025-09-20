@@ -122,7 +122,7 @@ func Error(t TestingT, got error, want any, msg ...string) {
 	}
 }
 
-func MatchesRegexp(t TestingT, got, pattern string, msg ...string) {
+func MatchesRegex(t TestingT, got, pattern string, msg ...string) {
 	if ht, ok := t.(helperT); ok {
 		ht.Helper()
 	}
