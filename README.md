@@ -1,5 +1,8 @@
 # Assert - A minimal Go test package
 
+> [!IMPORTANT]
+> Moved to [codeberg](https://codeberg.org/dropwhile/assert)!
+
 Inspired by:
 * https://github.com/nalgeon/be
 * https://antonz.org/do-not-testify/
